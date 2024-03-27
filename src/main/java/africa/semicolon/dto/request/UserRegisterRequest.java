@@ -10,5 +10,5 @@ public class UserRegisterRequest {
     private String lastName;
     private String username;
     private String password;
-    private LocalDateTime dateCreated;
+    private LocalDateTime dateCreated = LocalDateTime.now();
 }
