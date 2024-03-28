@@ -29,8 +29,10 @@ public class UserServicesImpl implements UserServices{
         return result;
     }
 
-    private void validate(String username) {
-        boolean userExist = userRepository.existsByUsername(username);
-        if (userExist) throw new UserAlreadyExist(username + "already exists");
+    private void validate(String username){
+        boolean userExists = userRepository.existsByUsername(username);
+        if(userExists) throw new UserAlreadyExist(username + " already exist");
     }
+
+ 
 }
