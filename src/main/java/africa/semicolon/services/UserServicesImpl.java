@@ -22,6 +22,7 @@ public class UserServicesImpl implements UserServices{
         validate(userRegisterRequest.getUsername());
 
         User user = map(userRegisterRequest);
+        userRepository.save(user);
 
         UserRegisterResponse result = map(user);
 
