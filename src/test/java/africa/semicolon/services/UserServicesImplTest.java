@@ -2,6 +2,7 @@ package africa.semicolon.services;
 
 import africa.semicolon.data.repository.PostRepository;
 import africa.semicolon.data.repository.UserRepository;
+import africa.semicolon.dto.request.UserDeletePostRequest;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
@@ -139,5 +140,59 @@ class UserServicesImplTest {
 
         assertEquals(1, userServices.findByUsername("username").getPosts().size());
         assertEquals("Updated Content", userServices.findByUsername("username").getPosts().get(0).getContent());
+    }
+
+    @Test
+    public void userCreatePost_anotherUserCantEditPost(){
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setUsername("username");
+        userRegisterRequest.setPassword("password");
+        userRegisterRequest.setFirstName("firstName");
+        userRegisterRequest.setLastName("lastName");
+        userServices.register(userRegisterRequest);
+
+        UserPostRequest userPostRequest = new UserPostRequest();
+        userPostRequest.setUsername("username");
+        userPostRequest.setTitle("First Title");
+        userPostRequest.setContent("First Content");
+        userServices.createPost(userPostRequest);
+
+        assertEquals(1, userServices.findByUsername("username").getPosts().size());
+        assertEquals("First Title", userServices.findByUsername("username").getPosts().get(0).getTitle());
+
+
+        UserEditPostRequest userEditPostRequest = new UserEditPostRequest();
+        userEditPostRequest.setUsername("fakeUsername");
+        userEditPostRequest.setTitle("First Title");
+        userEditPostRequest.setContent("Updated Content");
+        String id = userServices.findByUsername("username").getPosts().get(0).getId();
+        userEditPostRequest.setPostId(id);
+        assertThrows(UserDoesntExist.class,()-> userServices.updatePost(userEditPostRequest));
+    }
+
+    @Test
+    public void userCreatePost_userCanDeletePost(){
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setUsername("username");
+        userRegisterRequest.setPassword("password");
+        userRegisterRequest.setFirstName("firstName");
+        userRegisterRequest.setLastName("lastName");
+        userServices.register(userRegisterRequest);
+
+        UserPostRequest userPostRequest = new UserPostRequest();
+        userPostRequest.setUsername("username");
+        userPostRequest.setTitle("First Title");
+        userPostRequest.setContent("First Content");
+        userServices.createPost(userPostRequest);
+
+        assertEquals(1, userServices.findByUsername("username").getPosts().size());
+
+        UserDeletePostRequest userDeletePostRequest = new UserDeletePostRequest();
+        userDeletePostRequest.setUsername("username");
+        String id = userServices.findByUsername("username").getPosts().get(0).getId();
+        userDeletePostRequest.setPostId(id);
+        userServices.deletePost(userDeletePostRequest);
+
+        assertEquals(0, userServices.findByUsername("username").getPosts().size());
     }
 }

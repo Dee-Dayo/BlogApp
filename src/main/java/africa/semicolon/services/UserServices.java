@@ -1,5 +1,6 @@
 package africa.semicolon.services;
 
+import africa.semicolon.dto.request.UserDeletePostRequest;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
@@ -14,4 +15,6 @@ public interface UserServices {
     User findByUsername(String username);
 
     void updatePost(UserEditPostRequest userEditPostRequest);
+
+    void deletePost(UserDeletePostRequest userDeletePostRequest);
 }

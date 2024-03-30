@@ -3,6 +3,7 @@ package africa.semicolon.services;
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
 import africa.semicolon.data.repository.UserRepository;
+import africa.semicolon.dto.request.UserDeletePostRequest;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
@@ -68,6 +69,15 @@ public class UserServicesImpl implements UserServices{
         foundUser.getPosts().remove(oldPost);
         foundUser.getPosts().add(newPost);
 
+        userRepository.save(foundUser);
+    }
+
+    @Override
+    public void deletePost(UserDeletePostRequest userDeletePostRequest) {
+        userDeletePostRequest.setUsername(userDeletePostRequest.getUsername().toLowerCase());
+        User foundUser = userRepository.findByUsername(userDeletePostRequest.getUsername());
+        Post post = findUserPost(userDeletePostRequest.getPostId(), foundUser);
+        foundUser.getPosts().remove(post);
         userRepository.save(foundUser);
     }
 
