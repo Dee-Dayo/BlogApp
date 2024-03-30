@@ -1,6 +1,5 @@
 package africa.semicolon.services;
 
-import africa.semicolon.data.model.User;
 import africa.semicolon.data.repository.PostRepository;
 import africa.semicolon.data.repository.UserRepository;
 import africa.semicolon.dto.request.UserEditPostRequest;
@@ -132,12 +131,13 @@ class UserServicesImplTest {
 
         UserEditPostRequest userEditPostRequest = new UserEditPostRequest();
         userEditPostRequest.setUsername("username");
-        userEditPostRequest.setTitle("Updated Title");
+        userEditPostRequest.setTitle("First Title");
         userEditPostRequest.setContent("Updated Content");
+        String id = userServices.findByUsername("username").getPosts().get(0).getId();
+        userEditPostRequest.setPostId(id);
         userServices.updatePost(userEditPostRequest);
 
         assertEquals(1, userServices.findByUsername("username").getPosts().size());
-        assertEquals("Updated Title", userServices.findByUsername("username").getPosts().get(0).getTitle());
-
+        assertEquals("Updated Content", userServices.findByUsername("username").getPosts().get(0).getContent());
     }
 }
