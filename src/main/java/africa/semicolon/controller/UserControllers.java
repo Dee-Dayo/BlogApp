@@ -1,6 +1,10 @@
 package africa.semicolon.controller;
 
+import africa.semicolon.dto.request.UserEditPostRequest;
+import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
+import africa.semicolon.dto.response.CreatePostResponse;
+import africa.semicolon.dto.response.EditPostResponse;
 import africa.semicolon.dto.response.UserApiResponse;
 import africa.semicolon.dto.response.UserRegisterResponse;
 import africa.semicolon.exceptions.BlogAppExceptions;
@@ -29,6 +33,26 @@ public class UserControllers {
     public ResponseEntity<?> register(@RequestBody UserRegisterRequest userRegisterRequest){
         try {
             UserRegisterResponse result = userServices.register(userRegisterRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
+        } catch (BlogAppExceptions e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/create_post")
+    public ResponseEntity<?> createPost(@RequestBody UserPostRequest userPostRequest){
+        try {
+            CreatePostResponse result = userServices.createPost(userPostRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
+        } catch (BlogAppExceptions e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/edit_post")
+    public ResponseEntity<?> editPost(@RequestBody UserEditPostRequest userEditPostRequest){
+        try {
+            EditPostResponse result = userServices.updatePost(userEditPostRequest);
             return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
         } catch (BlogAppExceptions e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);

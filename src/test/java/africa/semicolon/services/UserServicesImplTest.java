@@ -128,17 +128,19 @@ class UserServicesImplTest {
 
         assertEquals(1, userServices.findByUsername("username").getPosts().size());
         assertEquals("First Title", userServices.findByUsername("username").getPosts().get(0).getTitle());
+        assertEquals("First Content", userServices.findByUsername("username").getPosts().get(0).getContent());
 
 
         UserEditPostRequest userEditPostRequest = new UserEditPostRequest();
         userEditPostRequest.setUsername("username");
-        userEditPostRequest.setTitle("First Title");
+        userEditPostRequest.setTitle("New Title");
         userEditPostRequest.setContent("Updated Content");
         String id = userServices.findByUsername("username").getPosts().get(0).getId();
         userEditPostRequest.setPostId(id);
         userServices.updatePost(userEditPostRequest);
 
         assertEquals(1, userServices.findByUsername("username").getPosts().size());
+        assertEquals("New Title", userServices.findByUsername("username").getPosts().get(0).getTitle());
         assertEquals("Updated Content", userServices.findByUsername("username").getPosts().get(0).getContent());
     }
 
@@ -194,5 +196,25 @@ class UserServicesImplTest {
         userServices.deletePost(userDeletePostRequest);
 
         assertEquals(0, userServices.findByUsername("username").getPosts().size());
+    }
+
+    @Test
+    public void userCreatePost_userCanViewPost(){
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setUsername("username");
+        userRegisterRequest.setPassword("password");
+        userRegisterRequest.setFirstName("firstName");
+        userRegisterRequest.setLastName("lastName");
+        userServices.register(userRegisterRequest);
+
+        UserPostRequest userPostRequest = new UserPostRequest();
+        userPostRequest.setUsername("username");
+        userPostRequest.setTitle("First Title");
+        userPostRequest.setContent("First Content");
+        userServices.createPost(userPostRequest);
+
+        assertEquals(1, userServices.findByUsername("username").getPosts().size());
+
+//        UserViewPostRequest userViewPostRequest = new UserViewPostRequest();
     }
 }

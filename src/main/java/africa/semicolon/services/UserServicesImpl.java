@@ -7,6 +7,8 @@ import africa.semicolon.dto.request.UserDeletePostRequest;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
+import africa.semicolon.dto.response.CreatePostResponse;
+import africa.semicolon.dto.response.EditPostResponse;
 import africa.semicolon.dto.response.UserRegisterResponse;
 import africa.semicolon.exceptions.PostNotFoundException;
 import africa.semicolon.exceptions.UserAlreadyExist;
@@ -14,9 +16,7 @@ import africa.semicolon.exceptions.UserDoesntExist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-import static africa.semicolon.utils.Mapper.map;
+import static africa.semicolon.utils.Mapper.*;
 
 @Service
 public class UserServicesImpl implements UserServices{
@@ -31,16 +31,14 @@ public class UserServicesImpl implements UserServices{
         userRegisterRequest.setUsername(userRegisterRequest.getUsername().toLowerCase());
         validate(userRegisterRequest.getUsername());
 
-        User user = map(userRegisterRequest);
+        User user = requestMap(userRegisterRequest);
         userRepository.save(user);
 
-        UserRegisterResponse result = map(user);
-
-        return result;
+        return responseMap(user);
     }
 
     @Override
-    public void createPost(UserPostRequest userPostRequest) {
+    public CreatePostResponse createPost(UserPostRequest userPostRequest) {
         userPostRequest.setUsername(userPostRequest.getUsername().toLowerCase());
         User foundUser = userRepository.findByUsername(userPostRequest.getUsername());
         validateUser(foundUser);
@@ -48,6 +46,8 @@ public class UserServicesImpl implements UserServices{
         Post post = postServices.createPost(userPostRequest);
         foundUser.getPosts().add(post);
         userRepository.save(foundUser);
+
+        return createPostResponseMap(post);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserServicesImpl implements UserServices{
     }
 
     @Override
-    public void updatePost(UserEditPostRequest userEditPostRequest) {
+    public EditPostResponse updatePost(UserEditPostRequest userEditPostRequest) {
         userEditPostRequest.setUsername(userEditPostRequest.getUsername().toLowerCase());
         User foundUser = userRepository.findByUsername(userEditPostRequest.getUsername());
         validateUser(foundUser);
@@ -70,6 +70,8 @@ public class UserServicesImpl implements UserServices{
         foundUser.getPosts().add(newPost);
 
         userRepository.save(foundUser);
+
+        return editPostResponseMap(newPost);
     }
 
     @Override
