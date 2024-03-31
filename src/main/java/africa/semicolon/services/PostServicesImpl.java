@@ -1,9 +1,11 @@
 package africa.semicolon.services;
 
+import africa.semicolon.data.model.Comment;
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
 import africa.semicolon.data.model.View;
 import africa.semicolon.data.repository.PostRepository;
+import africa.semicolon.dto.request.UserCommentPostRequest;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserViewPostRequest;
@@ -25,6 +27,9 @@ public class PostServicesImpl implements PostServices {
     @Autowired
     ViewServices viewServices;
 
+    @Autowired
+    CommentServices commentServices;
+
 
     @Override
     public Post createPost(UserPostRequest userPostRequest) {
@@ -44,9 +49,7 @@ public class PostServicesImpl implements PostServices {
     public void viewPost(UserViewPostRequest userViewPostRequest) {
         Post post = findPostById(userViewPostRequest.getPostId());
         View view = viewServices.saveView(userViewPostRequest);
-        System.out.println(post.getViews());
         post.getViews().add(view);
-        System.out.println(post.getViews());
         postRepository.save(post);
     }
 
@@ -54,6 +57,14 @@ public class PostServicesImpl implements PostServices {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty()) throw new PostNotFoundException("Post not found");
         return post.get();
+    }
+
+    @Override
+    public void commentPost(UserCommentPostRequest userCommentPostRequest) {
+        Post post = findPostById(userCommentPostRequest.getPostId());
+        Comment comment = commentServices.saveComment(userCommentPostRequest);
+        post.getComments().add(comment);
+        postRepository.save(post);
     }
 
 

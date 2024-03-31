@@ -81,6 +81,7 @@ public class UserServicesImpl implements UserServices{
         Post post = findUserPost(userDeletePostRequest.getPostId(), foundUser);
         foundUser.getPosts().remove(post);
         userRepository.save(foundUser);
+
     }
 
     private Post findUserPost(String postId, User user) {
