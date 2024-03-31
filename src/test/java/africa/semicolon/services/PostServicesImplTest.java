@@ -3,6 +3,7 @@ package africa.semicolon.services;
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
 import africa.semicolon.data.repository.PostRepository;
+import africa.semicolon.data.repository.UserRepository;
 import africa.semicolon.data.repository.ViewRepository;
 import africa.semicolon.dto.request.UserCommentPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
@@ -25,11 +26,14 @@ class PostServicesImplTest {
     UserServices userServices;
     @Autowired
     ViewRepository viewRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @BeforeEach
     public void setUp(){
         postRepository.deleteAll();
         viewRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -127,5 +131,41 @@ class PostServicesImplTest {
         assertEquals(1, post1.getViews().size());
         assertEquals(1, post1.getComments().size());
         assertEquals("This post is trash", post1.getComments().getFirst().getComment());
+    }
+
+    @Test
+    public void create_onePost_twoCommentOnPost(){
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setUsername("username");
+        userRegisterRequest.setPassword("password");
+        userRegisterRequest.setFirstName("firstName");
+        userRegisterRequest.setLastName("lastName");
+        userServices.register(userRegisterRequest);
+        User user = userServices.findByUsername(userRegisterRequest.getUsername());
+
+        UserPostRequest userPostRequest = new UserPostRequest();
+        userPostRequest.setTitle("Title");
+        userPostRequest.setContent("Content");
+        userPostRequest.setUsername(userRegisterRequest.getUsername());
+
+        Post post = postServices.createPost(userPostRequest);
+        assertEquals(0, post.getComments().size());
+
+        UserCommentPostRequest userCommentPostRequest = new UserCommentPostRequest();
+        userCommentPostRequest.setPostId(post.getId());
+        userCommentPostRequest.setCommenter(user);
+        userCommentPostRequest.setComment("This post is trash");
+        postServices.commentPost(userCommentPostRequest);
+
+        post = postServices.findPostById(post.getId());
+        assertEquals(1, post.getComments().size());
+        assertEquals("This post is trash", post.getComments().getFirst().getComment());
+
+        userCommentPostRequest.setComment("This post is ok");
+        postServices.commentPost(userCommentPostRequest);
+
+        post = postServices.findPostById(post.getId());
+        assertEquals(2, post.getComments().size());
+        assertEquals("This post is ok", post.getComments().get(1).getComment());
     }
 }
