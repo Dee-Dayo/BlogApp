@@ -2,9 +2,11 @@ package africa.semicolon.utils;
 
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
+import africa.semicolon.data.model.View;
 import africa.semicolon.dto.request.UserEditPostRequest;
 import africa.semicolon.dto.request.UserPostRequest;
 import africa.semicolon.dto.request.UserRegisterRequest;
+import africa.semicolon.dto.request.UserViewPostRequest;
 import africa.semicolon.dto.response.CreatePostResponse;
 import africa.semicolon.dto.response.EditPostResponse;
 import africa.semicolon.dto.response.UserRegisterResponse;
@@ -29,12 +31,19 @@ public class Mapper {
         return post;
     }
 
-        public static Post requestMap(UserEditPostRequest userEditPostRequest){
+    public static Post requestMap(UserEditPostRequest userEditPostRequest){
         Post post = new Post();
         post.setTitle(userEditPostRequest.getTitle());
         post.setContent(userEditPostRequest.getContent());
         post.setId(userEditPostRequest.getUsername());
         return post;
+    }
+
+    public static View requestMap(UserViewPostRequest userViewPostRequest){
+        View view = new View();
+        User viewer = userViewPostRequest.getViewer();
+        view.setViewer(viewer);
+        return view;
     }
 
     public static UserRegisterResponse responseMap(User user){

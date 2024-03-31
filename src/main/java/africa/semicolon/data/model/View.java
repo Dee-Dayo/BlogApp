@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Document("Views")
 public class View {
-    private LocalDateTime timeOfView;
+    private LocalDateTime timeOfView = LocalDateTime.now();
     @DBRef
     private User viewer;
     private String id;

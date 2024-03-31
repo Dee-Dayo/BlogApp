@@ -2,10 +2,7 @@ package africa.semicolon.services;
 
 import africa.semicolon.data.repository.PostRepository;
 import africa.semicolon.data.repository.UserRepository;
-import africa.semicolon.dto.request.UserDeletePostRequest;
-import africa.semicolon.dto.request.UserEditPostRequest;
-import africa.semicolon.dto.request.UserPostRequest;
-import africa.semicolon.dto.request.UserRegisterRequest;
+import africa.semicolon.dto.request.*;
 import africa.semicolon.exceptions.UserAlreadyExist;
 import africa.semicolon.exceptions.UserDoesntExist;
 import org.junit.jupiter.api.BeforeEach;
@@ -215,6 +212,6 @@ class UserServicesImplTest {
 
         assertEquals(1, userServices.findByUsername("username").getPosts().size());
 
-//        UserViewPostRequest userViewPostRequest = new UserViewPostRequest();
+        UserViewPostRequest userViewPostRequest = new UserViewPostRequest();
     }
 }
