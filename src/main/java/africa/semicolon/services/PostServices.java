@@ -16,4 +16,6 @@ public interface PostServices {
     void commentPost(UserCommentPostRequest userCommentPostRequest);
 
     void deleteComment(UserDeleteCommentRequest userDeleteCommentRequest);
+
+    void deletePost(UserDeletePostRequest userDeletePostRequest);
 }

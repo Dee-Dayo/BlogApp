@@ -78,8 +78,10 @@ public class UserServicesImpl implements UserServices{
     public void deletePost(UserDeletePostRequest userDeletePostRequest) {
         userDeletePostRequest.setUsername(userDeletePostRequest.getUsername().toLowerCase());
         User foundUser = userRepository.findByUsername(userDeletePostRequest.getUsername());
+        validateUser(foundUser);
         Post post = findUserPost(userDeletePostRequest.getPostId(), foundUser);
         foundUser.getPosts().remove(post);
+        postServices.deletePost(userDeletePostRequest);
         userRepository.save(foundUser);
 
     }

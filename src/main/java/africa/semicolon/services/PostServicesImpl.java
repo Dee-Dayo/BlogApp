@@ -72,5 +72,11 @@ public class PostServicesImpl implements PostServices {
         postRepository.save(post);
     }
 
+    @Override
+    public void deletePost(UserDeletePostRequest userDeletePostRequest) {
+        Post post = findPostById(userDeletePostRequest.getPostId());
+        postRepository.delete(post);
+    }
+
 
 }

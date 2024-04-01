@@ -16,7 +16,7 @@ public class Post {
     private String content;
     @Id
     private String id;
-    private LocalDateTime dateCreated;
+    private LocalDateTime dateCreated = LocalDateTime.now();
     @DBRef
     private List<View> views = new ArrayList<>();
     @DBRef
