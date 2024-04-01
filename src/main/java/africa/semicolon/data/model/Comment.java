@@ -13,5 +13,5 @@ public class Comment {
     @DBRef
     private User commenter;
     private String comment;
-    private LocalDateTime timeOfComment;
+    private LocalDateTime timeOfComment = LocalDateTime.now();
 }

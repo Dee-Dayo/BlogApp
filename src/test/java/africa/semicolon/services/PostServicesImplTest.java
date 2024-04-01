@@ -1,14 +1,13 @@
 package africa.semicolon.services;
 
+import africa.semicolon.data.model.Comment;
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
+import africa.semicolon.data.repository.CommentRepository;
 import africa.semicolon.data.repository.PostRepository;
 import africa.semicolon.data.repository.UserRepository;
 import africa.semicolon.data.repository.ViewRepository;
-import africa.semicolon.dto.request.UserCommentPostRequest;
-import africa.semicolon.dto.request.UserPostRequest;
-import africa.semicolon.dto.request.UserRegisterRequest;
-import africa.semicolon.dto.request.UserViewPostRequest;
+import africa.semicolon.dto.request.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,17 @@ class PostServicesImplTest {
     ViewRepository viewRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CommentServices commentServices;
+    @Autowired
+    CommentRepository commentRepository;
 
     @BeforeEach
     public void setUp(){
         postRepository.deleteAll();
         viewRepository.deleteAll();
         userRepository.deleteAll();
+        commentRepository.deleteAll();
     }
 
     @Test
@@ -167,5 +171,46 @@ class PostServicesImplTest {
         post = postServices.findPostById(post.getId());
         assertEquals(2, post.getComments().size());
         assertEquals("This post is ok", post.getComments().get(1).getComment());
+    }
+
+    @Test
+    public void createOnePost_addOneComment_DeleteCcomment(){
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setUsername("username");
+        userRegisterRequest.setPassword("password");
+        userRegisterRequest.setFirstName("firstName");
+        userRegisterRequest.setLastName("lastName");
+        userServices.register(userRegisterRequest);
+        User user = userServices.findByUsername(userRegisterRequest.getUsername());
+
+        UserPostRequest userPostRequest = new UserPostRequest();
+        userPostRequest.setTitle("Title");
+        userPostRequest.setContent("Content");
+        userPostRequest.setUsername(userRegisterRequest.getUsername());
+
+        Post post = postServices.createPost(userPostRequest);
+        Post post1 = postServices.findPostById(post.getId());
+        assertEquals(0, post1.getComments().size());
+
+        UserCommentPostRequest userCommentPostRequest = new UserCommentPostRequest();
+        userCommentPostRequest.setPostId(post.getId());
+        userCommentPostRequest.setCommenter(user);
+        userCommentPostRequest.setComment("Good post");
+        postServices.commentPost(userCommentPostRequest);
+
+        post1 = postServices.findPostById(post1.getId());
+        assertEquals(1, commentRepository.count());
+        assertEquals(1, post1.getComments().size());
+        assertEquals("Good post", post1.getComments().getFirst().getComment());
+
+        UserDeleteCommentRequest userDeleteCommentRequest = new UserDeleteCommentRequest();
+        Comment comment = commentServices.findById(post1.getComments().get(0).getId());
+        userDeleteCommentRequest.setCommentId(comment.getId());
+        userDeleteCommentRequest.setPostId(post1.getId());
+        postServices.deleteComment(userDeleteCommentRequest);
+
+        post1 = postServices.findPostById(post1.getId());
+        assertEquals(0, post1.getComments().size());
+        assertEquals(0, commentRepository.count());
     }
 }

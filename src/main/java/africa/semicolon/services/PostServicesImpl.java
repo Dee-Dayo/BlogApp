@@ -5,10 +5,7 @@ import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
 import africa.semicolon.data.model.View;
 import africa.semicolon.data.repository.PostRepository;
-import africa.semicolon.dto.request.UserCommentPostRequest;
-import africa.semicolon.dto.request.UserEditPostRequest;
-import africa.semicolon.dto.request.UserPostRequest;
-import africa.semicolon.dto.request.UserViewPostRequest;
+import africa.semicolon.dto.request.*;
 import africa.semicolon.exceptions.PostNotFoundException;
 import africa.semicolon.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +61,14 @@ public class PostServicesImpl implements PostServices {
         Post post = findPostById(userCommentPostRequest.getPostId());
         Comment comment = commentServices.saveComment(userCommentPostRequest);
         post.getComments().add(comment);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void deleteComment(UserDeleteCommentRequest userDeleteCommentRequest) {
+        Post post = findPostById(userDeleteCommentRequest.getPostId());
+        Comment comment = commentServices.deleteComment(userDeleteCommentRequest);
+        post.getComments().remove(comment);
         postRepository.save(post);
     }
 

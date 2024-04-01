@@ -2,10 +2,7 @@ package africa.semicolon.services;
 
 import africa.semicolon.data.model.Post;
 import africa.semicolon.data.model.User;
-import africa.semicolon.dto.request.UserCommentPostRequest;
-import africa.semicolon.dto.request.UserEditPostRequest;
-import africa.semicolon.dto.request.UserPostRequest;
-import africa.semicolon.dto.request.UserViewPostRequest;
+import africa.semicolon.dto.request.*;
 
 public interface PostServices {
     Post createPost(UserPostRequest userPostRequest);
@@ -17,4 +14,6 @@ public interface PostServices {
     Post findPostById(String postId);
 
     void commentPost(UserCommentPostRequest userCommentPostRequest);
+
+    void deleteComment(UserDeleteCommentRequest userDeleteCommentRequest);
 }
